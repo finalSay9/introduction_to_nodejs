@@ -1,5 +1,5 @@
 const express =  require('express')
-const { PrismaClient } = require(@prisma/client)
+const { PrismaClient } = require("@prisma/client");
 const app = express()
 const prisma = new PrismaClient();
 const PORT = 3000
@@ -13,9 +13,13 @@ app.post('/users', async (req, res) => {
         data: req.body,
     });
     res.json(user);
-
 })
 
+
+app.get('/users', async (req, res) => {
+    const users = await prisma.user.findMnay();
+    res.json(users);
+})
 
 
 
