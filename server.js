@@ -7,28 +7,24 @@ const PORT = 3000
 app.use(express.json());
 
 //create user
-
 app.post('/users', async (req, res) => {
+  try {
     const user = await prisma.user.create({
-        data: req.body,
+      data: req.body,
     });
     res.json(user);
-})
-
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Something went wrong" });
+  }
+});
 
 app.get('/users', async (req, res) => {
-    const users = await prisma.user.findMnay();
+  try {
+    const users = await prisma.user.findMany();
     res.json(users);
-})
-
-
-
-
-
-app.get('/', (req, res) => {
-    res.send('hello evan, welcome to the expressjs')
-})
-
-app.listen(PORT, () => {
-    console.log(`server is running on port ${PORT}`)
-})
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Something went wrong" });
+  }
+});
