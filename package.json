@@ -4,11 +4,26 @@
   "description": "myapp",
   "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
   },
   "author": "evan chimwaza",
   "license": "ISC",
   "dependencies": {
-    "express": "^5.2.1"
+    "@prisma/client": "^7.7.0",
+    "express": "^5.2.1",
+    "pg": "^8.20.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/finalSay9/introduction_to_nodejs.git"
+  },
+  "keywords": [],
+  "bugs": {
+    "url": "https://github.com/finalSay9/introduction_to_nodejs/issues"
+  },
+  "homepage": "https://github.com/finalSay9/introduction_to_nodejs#readme",
+  "devDependencies": {
+    "prisma": "^7.7.0"
   }
 }
