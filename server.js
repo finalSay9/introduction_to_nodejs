@@ -1,15 +1,11 @@
-require("dotenv").config();
+//require("dotenv").config();
+import dotenv from 'dotenv';
+import express from 'express'
 import swaggerUi from 'swagger-ui-express';
 import swaggerJSDoc from 'swagger-jsdoc';
-
-
-const express =  require('express')
-const { PrismaClient } = require("@prisma/client");
-const { PrismaPg } = require("@prisma/adapter-pg");
+import { PrismaClient } from "@prisma/client";
+import { PrismaPg } from "@prisma/adapter-pg";
 const app = express()
-//const prisma = new PrismaClient();
-// You create a Prisma adapter using your DATABASE_URL,
-// then pass that adapter into PrismaClient — this replaces the old url in schema.prisma
 const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL });
 const prisma = new PrismaClient({ adapter });
 const PORT = 3000
@@ -18,6 +14,10 @@ const PORT = 3000
 
 
 
+import dotenv from "dotenv";
+import express from "express";
+
+dotenv.config();
 app.use(express.json());
 
 //create user
