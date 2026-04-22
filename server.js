@@ -1,39 +1,33 @@
 import express from "express";
 import swaggerUi from "swagger-ui-express";
 import swaggerJsdoc from "swagger-jsdoc";
-import { fileURLToPath } from 'url';
-import { dirname } from 'path';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
+import usersRouter from "./routes/users.js";
 
 const app = express();
 
-// Simple Swagger config
-const swaggerSpec = {
-  openapi: "3.0.0",
-  info: {
-    title: "My API",
-    version: "1.0.0",
-    description: "Simple Express API with Swagger",
-  },
-  servers: [
-    {
-      url: "http://localhost:3006",
+app.use(express.json()); // important — parses JSON request bodies
+
+const options = {
+  definition: {
+    openapi: "3.0.0",
+    info: {
+      title: "My API",
+      version: "1.0.0",
+      description: "API documentation",
     },
-  ],
-  paths: {}, // Empty for now
+  },
+  apis: ["./routes/*.js"], // path to your route files
 };
 
-// Swagger route
-app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+const swaggerSpec = swaggerJsdoc(options);
 
-// Test route
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+app.use("/users", usersRouter); // 👈 register users routes
+
 app.get("/", (req, res) => {
   res.send("Server is working!");
 });
 
 app.listen(3006, () => {
   console.log("Server running on http://localhost:3006");
-  console.log("Docs at http://localhost:3006/api-docs");
 });
