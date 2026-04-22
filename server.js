@@ -1,48 +1,34 @@
-//require("dotenv").config();
-import dotenv from 'dotenv';
-import express from 'express'
-import swaggerUi from 'swagger-ui-express';
-import swaggerJSDoc from 'swagger-jsdoc';
-import { PrismaClient } from "@prisma/client";
-import { PrismaPg } from "@prisma/adapter-pg";
-const app = express()
-const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL });
-const prisma = new PrismaClient({ adapter });
-const PORT = 3000
-
-
-
-
-
-import dotenv from "dotenv";
 import express from "express";
+import swaggerUi from "swagger-ui-express";
+import swaggerJsdoc from "swagger-jsdoc";
 
-dotenv.config();
-app.use(express.json());
+const app = express();
 
-//create user
-app.post('/users', async (req, res) => {
-  try {
-    const user = await prisma.user.create({
-      data: req.body,
-    });
-    res.json(user);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: "Something went wrong" });
-  }
-});
+// Swagger config
+const options = {
+  definition: {
+    openapi: "3.0.0",
+    info: {
+      title: "My API",
+      version: "1.0.0",
+      description: "Simple Express API with Swagger",
+    },
+    servers: [
+      {
+        url: "http://localhost:3000",
+      },
+    ],
+  },
+  apis: ["./routes/*.js"], // where your route docs live
+};
 
-app.get('/users', async (req, res) => {
-  try {
-    const users = await prisma.user.findMany();
-    res.json(users);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: "Something went wrong" });
-  }
-});
+const swaggerSpec = swaggerJsdoc(options);
+
+// Swagger route
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 app.listen(3000, () => {
-  console.log("server is running on port 3000");
+  console.log("Server running on http://localhost:3000");
+  
+  console.log("Docs at http://localhost:3000/api-docs");
 });
