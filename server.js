@@ -1,7 +1,9 @@
 require("dotenv").config();
+import swaggerUi from 'swagger-ui-express';
+import swaggerJSDoc from 'swagger-jsdoc';
+
 
 const express =  require('express')
-console.log("DATABASE_URL:", process.env.DATABASE_URL);
 const { PrismaClient } = require("@prisma/client");
 const { PrismaPg } = require("@prisma/adapter-pg");
 const app = express()
@@ -14,7 +16,7 @@ const PORT = 3000
 
 
 
-console.log("DB:", process.env.DATABASE_URL);
+
 
 app.use(express.json());
 
