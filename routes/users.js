@@ -16,7 +16,7 @@ const router = Router();
 
 /**
  * @openapi
- * /register:
+ * /users/register:
  *   post:
  *     summary: Register a new user
  *     requestBody:
@@ -81,7 +81,7 @@ router.post("/register", async(req, res) => {
                 id: true,
                 name: true,
                 email: true,
-                createdAt: true
+                //createdAt: true
                 // Don't return the password
             }
         });
