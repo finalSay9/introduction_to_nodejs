@@ -155,9 +155,10 @@ router.get("/:id", async (req, res) => {
         console.error("Get user error", error)
         res.status(500).json({error: "internal server error"})
         
-    }
-
-    
+    } 
 });
+
+
+
 
 export default router;
