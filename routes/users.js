@@ -111,8 +111,12 @@ router.post("/register", async(req, res) => {
  *               items:
  *                 type: object
  */
-router.get("/", (req, res) => {
-    res.json({ message: "Evan welcome to the nodejs class" });
+router.get("/", async (req, res) => {
+    const users = await prisma.user.findMany({where:{
+        name: true,
+        email:true
+    }})
+    res.status(200).json(users)
 });
 
 /**
@@ -133,8 +137,27 @@ router.get("/", (req, res) => {
  *       404:
  *         description: User not found
  */
-router.get("/:id", (req, res) => {
-    res.json({ message: `Get user ${req.params.id}` });
+router.get("/:id", async (req, res) => {
+    try {
+        const { id } = req.params;
+        const user = await prisma.user.findUnique({
+            where: {id},
+            select: {
+                name:true,
+                email: true
+            }
+        });
+        if(!user) {
+            return res.status(400).json({error: "user not found"})
+        }
+        res.status(200).json(user)
+    } catch (error) {
+        console.error("Get user error", error)
+        res.status(500).json({error: "internal server error"})
+        
+    }
+
+    
 });
 
 export default router;
