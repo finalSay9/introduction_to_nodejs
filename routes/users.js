@@ -3,8 +3,8 @@ import { Router } from 'express';
 import { PrismaClient } from '@prisma/client';
 import bcrypt from 'bcrypt';
 import { PrismaPg } from "@prisma/adapter-pg";
-import { validateRegister } from '@middleware/validateRegister';
-import { authenticate } from '@middleware/auth';
+import { validateRegisteration } from '../middleware/validateRegister.js';
+import { authenticate } from '../middleware/auth.js';
 
 
 // You create a Prisma adapter using your DATABASE_URL,
@@ -47,41 +47,38 @@ const router = Router();
  *       500:
  *         description: Internal server error
  */
-router.post("/register", validateRegister, async(req, res) => {
+router.post("/register", validateRegisteration,  async(req, res) => {
     try {
-        //requesting the body
-        const { name, email, password } = req.body;
-        
-        //validating the provided data
-        if(!name || !email || !password) {
-            return res.status(400).json({
-                error: "name, email, password are needed"
-            });
-        }
-        
-        
+      //requesting the body
+      const { name, email, password } = req.body;
 
-        const salt = 10;
-        const hashed_password = await bcrypt.hash(password, salt);
-
-        //save to db
-        const user = await prisma.user.create({
-            data: {
-                name,
-                email,
-                password: hashed_password
-            },
-            select: {
-                id: true,
-                name: true,
-                email: true,
-                //createdAt: true
-                // Don't return the password
-            }
+      //validating the provided data
+      if (!name || !email || !password) {
+        return res.status(400).json({
+          error: "name, email, password are needed",
         });
+      }
 
-        res.status(201).json({message: "user created successfully", user}); // FIXED: Use 201 Created
+      const salt = 10;
+      const hashed_password = await bcrypt.hash(password, salt);
 
+      //save to db
+      const user = await prisma.user.create({
+        data: {
+          name,
+          email,
+          password: hashed_password,
+        },
+        select: {
+          id: true,
+          name: true,
+          email: true,
+          //createdAt: true
+          // Don't return the password
+        },
+      });
+      
+      res.status(201).json({ message: "user created successfully", user }); // FIXED: Use 201 Created
     } catch (error) {
         console.error("Registration error:", error);
         res.status(500).json({ 
@@ -105,7 +102,7 @@ router.post("/register", validateRegister, async(req, res) => {
  *               items:
  *                 type: object
  */
-router.get("/", async (req, res) => {
+router.get("/",authenticate, async (req, res) => {
     const users = await prisma.user.findMany({where:{
         name: true,
         email:true
