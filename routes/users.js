@@ -1,9 +1,10 @@
 import 'dotenv/config'; 
-import express from 'express';
 import { Router } from 'express';
 import { PrismaClient } from '@prisma/client';
 import bcrypt from 'bcrypt';
 import { PrismaPg } from "@prisma/adapter-pg";
+import { validateRegister } from '@middleware/validateRegister';
+import { authenticate } from '@middleware/auth';
 
 
 // You create a Prisma adapter using your DATABASE_URL,
@@ -46,7 +47,7 @@ const router = Router();
  *       500:
  *         description: Internal server error
  */
-router.post("/register", async(req, res) => {
+router.post("/register", validateRegister, async(req, res) => {
     try {
         //requesting the body
         const { name, email, password } = req.body;
@@ -58,14 +59,7 @@ router.post("/register", async(req, res) => {
             });
         }
         
-        //check if the user already exists
-        const existingUser = await prisma.user.findUnique({where: {email}});
-
-        if(existingUser) {
-            return res.status(409).json({  // FIXED: Use 409 Conflict instead of 500
-                error: "user already exists"
-            });
-        }
+        
 
         const salt = 10;
         const hashed_password = await bcrypt.hash(password, salt);
